@@ -16,166 +16,51 @@
   }
 </script>
 
-<div class="round-setup">
-  <div class="round-header">
-    <h2>Ronda {round.number}</h2>
-    <p class="tricks">{tricksInRound} bazas</p>
+<div class="panel">
+  <div class="panel-header">
+    <h2 class="text-lg font-bold text-bone text-center">
+      Ronda {round.number}
+    </h2>
+    <p class="text-gold text-sm text-center mt-1">{tricksInRound} bazas</p>
   </div>
   
-  <div class="section">
-    <h3>Triunfo</h3>
-    <div class="suit-selector">
-      {#each Object.entries(SUITS) as [key, suit]}
-        <button 
-          class="suit-btn"
-          class:selected={round.trump === key}
-          style="border-color: {suit.color}"
-          on:click={() => gameStore.setTrump(key)}
-        >
-          <span class="suit-emoji">{suit.emoji}</span>
-          <span class="suit-name">{suit.name}</span>
-        </button>
-      {/each}
+  <div class="panel-content flex flex-col gap-6 animate-fade-in">
+    <div class="w-full max-w-sm mx-auto">
+      <h3 class="text-gray-light text-sm mb-3 text-center">Triunfo</h3>
+      <div class="grid grid-cols-2 gap-3">
+        {#each Object.entries(SUITS) as [key, suit]}
+          <button 
+            class="suit-btn"
+            class:selected={round.trump === key}
+            on:click={() => gameStore.setTrump(key)}
+          >
+            <span class="text-3xl">{suit.emoji}</span>
+            <span class="text-sm text-bone">{suit.name}</span>
+          </button>
+        {/each}
+      </div>
+    </div>
+    
+    <div class="w-full max-w-sm mx-auto">
+      <h3 class="text-gray-light text-sm mb-3 text-center">Mano</h3>
+      <div class="flex flex-wrap justify-center gap-2">
+        {#each players as player}
+          <button 
+            class="mano-btn"
+            class:selected={round.mano === player.id}
+            on:click={() => gameStore.setMano(player.id)}
+          >
+            <span class="avatar-medium">{player.avatar}</span>
+            <span class="text-xs text-bone">{player.name}</span>
+          </button>
+        {/each}
+      </div>
     </div>
   </div>
   
-  <div class="section">
-    <h3>Mano</h3>
-    <div class="mano-selector">
-      {#each players as player}
-        <button 
-          class="mano-btn"
-          class:selected={round.mano === player.id}
-          on:click={() => gameStore.setMano(player.id)}
-        >
-          <span class="player-avatar">{player.avatar}</span>
-          <span class="player-name">{player.name}</span>
-        </button>
-      {/each}
-    </div>
+  <div class="panel-footer">
+    <button class="btn-primary" on:click={handleStartRound} disabled={!canStart}>
+      Empezar apuestas
+    </button>
   </div>
-  
-  <button class="primary" on:click={handleStartRound} disabled={!canStart}>
-    Empezar apuestas
-  </button>
 </div>
-
-<style>
-  .round-setup {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2rem;
-    gap: 2rem;
-  }
-  
-  .round-header {
-    text-align: center;
-  }
-  
-  h2 {
-    font-size: 1.8rem;
-    margin-bottom: 0.25rem;
-  }
-  
-  .tricks {
-    font-size: 1.2rem;
-    color: #e94560;
-  }
-  
-  .section {
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  h3 {
-    font-size: 1rem;
-    color: #a0a0a0;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  
-  .suit-selector {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-  
-  .suit-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-    background: #16213e;
-    border: 2px solid #0f3460;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .suit-btn.selected {
-    background: #0f3460;
-    border-color: #e94560;
-  }
-  
-  .suit-emoji {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .suit-name {
-    font-size: 0.9rem;
-  }
-  
-  .mano-selector {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-  }
-  
-  .mano-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    background: #16213e;
-    border: 2px solid #0f3460;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .mano-btn.selected {
-    background: #0f3460;
-    border-color: #e94560;
-  }
-  
-  .player-avatar {
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
-  }
-  
-  .player-name {
-    font-size: 0.8rem;
-  }
-  
-  .primary {
-    width: 100%;
-    max-width: 300px;
-    padding: 1rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    background: #e94560;
-    color: white;
-    cursor: pointer;
-    margin-top: auto;
-  }
-  
-  .primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-</style>
