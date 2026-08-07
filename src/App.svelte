@@ -1,89 +1,122 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from './assets/vite.svg'
-  import heroImg from './assets/hero.png'
-  import Counter from './lib/Counter.svelte'
+  import { onMount } from 'svelte';
+  import { gameStore, loadGame, saveGame, hasSavedGame } from './stores/gameState';
+  import { PHASES } from './lib/constants';
+  
+  import WelcomeScreen from './components/WelcomeScreen.svelte';
+  import GameSetup from './components/GameSetup.svelte';
+  import PlayerRegistration from './components/PlayerRegistration.svelte';
+  import TablePosition from './components/TablePosition.svelte';
+  import RoundSetup from './components/RoundSetup.svelte';
+  import BiddingPhase from './components/BiddingPhase.svelte';
+  import PlayingPhase from './components/PlayingPhase.svelte';
+  import ScoringPhase from './components/ScoringPhase.svelte';
+  import ScoreBoard from './components/ScoreBoard.svelte';
+  
+  let playerCount = 4;
+  
+  onMount(() => {
+    const saved = loadGame();
+    if (saved) {
+      gameStore.set(saved);
+    }
+  });
+  
+  $: phase = $gameStore.currentRound.phase;
+  $: if (phase !== PHASES.WELCOME) {
+    saveGame($gameStore);
+  }
+  
+  function handleNewGame() {
+    gameStore.reset();
+    gameStore.setPhase(PHASES.SETUP);
+  }
+  
+  function handleResumeGame() {
+    const saved = loadGame();
+    if (saved) {
+      gameStore.set(saved);
+    }
+  }
+  
+  function handleStartRegistration(event) {
+    playerCount = event.detail.playerCount;
+    gameStore.setPhase(PHASES.REGISTRATION);
+  }
+  
+  function handleRegistrationComplete() {
+    gameStore.setPhase(PHASES.POSITIONING);
+  }
+  
+  function handlePositioningComplete() {
+    gameStore.setPhase(PHASES.ROUND_SETUP);
+  }
+  
+  function handleRoundStarted() {
+    gameStore.setPhase(PHASES.BIDDING);
+  }
+  
+  function handleBiddingComplete() {
+    gameStore.setPhase(PHASES.PLAYING);
+  }
+  
+  function handlePlayingComplete() {
+    gameStore.setPhase(PHASES.SCORING);
+  }
+  
+  function handleNextRound() {
+    if ($gameStore.currentRound.phase === PHASES.GAME_END) {
+      gameStore.setPhase(PHASES.GAME_END);
+    } else {
+      gameStore.setPhase(PHASES.ROUND_SETUP);
+    }
+  }
+  
+  function handleGameEnd() {
+    gameStore.setPhase(PHASES.GAME_END);
+  }
 </script>
 
-<section id="center">
-  <div class="hero">
-    <img src={heroImg} class="base" width="170" height="179" alt="" />
-    <img src={svelteLogo} class="framework" alt="Svelte logo" />
-    <img src={viteLogo} class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/App.svelte</code> and save to test <code>HMR</code></p>
-  </div>
-  <Counter />
-</section>
+<main>
+  {#if phase === PHASES.WELCOME}
+    <WelcomeScreen on:newGame={handleNewGame} on:resumeGame={handleResumeGame} />
+    
+  {:else if phase === PHASES.SETUP}
+    <GameSetup on:startRegistration={handleStartRegistration} />
+    
+  {:else if phase === PHASES.REGISTRATION}
+    <PlayerRegistration on:registrationComplete={handleRegistrationComplete} />
+    
+  {:else if phase === PHASES.POSITIONING}
+    <TablePosition on:positioningComplete={handlePositioningComplete} />
+    
+  {:else if phase === PHASES.ROUND_SETUP}
+    <RoundSetup on:roundStarted={handleRoundStarted} />
+    
+  {:else if phase === PHASES.BIDDING}
+    <BiddingPhase on:biddingComplete={handleBiddingComplete} />
+    
+  {:else if phase === PHASES.PLAYING}
+    <PlayingPhase on:playingComplete={handlePlayingComplete} />
+    
+  {:else if phase === PHASES.SCORING}
+    <ScoringPhase on:nextRound={handleNextRound} on:gameEnd={handleGameEnd} />
+    
+  {:else if phase === PHASES.GAME_END}
+    <ScoreBoard on:newGame={handleNewGame} />
+  {/if}
+</main>
 
-<div class="ticks"></div>
-
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#documentation-icon"></use>
-    </svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank" rel="noreferrer">
-          <img class="logo" src={viteLogo} alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://svelte.dev/" target="_blank" rel="noreferrer">
-          <img class="button-icon" src={svelteLogo} alt="" />
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#social-icon"></use>
-    </svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li>
-        <a href="https://github.com/vitejs/vite" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#github-icon"></use>
-          </svg>
-          GitHub
-        </a>
-      </li>
-      <li>
-        <a href="https://chat.vite.dev/" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#discord-icon"></use>
-          </svg>
-          Discord
-        </a>
-      </li>
-      <li>
-        <a href="https://x.com/vite_js" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#x-icon"></use>
-          </svg>
-          X.com
-        </a>
-      </li>
-      <li>
-        <a href="https://bsky.app/profile/vite.dev" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#bluesky-icon"></use>
-          </svg>
-          Bluesky
-        </a>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<div class="ticks"></div>
-<section id="spacer"></section>
+<style>
+  :global(body) {
+    margin: 0;
+    padding: 0;
+    background: #1a1a2e;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  main {
+    min-height: 100vh;
+  }
+</style>
