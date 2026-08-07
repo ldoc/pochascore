@@ -14,6 +14,7 @@
   import ScoreBoard from './components/ScoreBoard.svelte';
   
   let playerCount = 4;
+  let isFlipping = false;
   
   onMount(() => {
     const saved = loadGame();
@@ -40,9 +41,21 @@
     saveGame($gameStore);
   }
   
+  function triggerFlip(callback) {
+    isFlipping = true;
+    setTimeout(() => {
+      callback();
+      setTimeout(() => {
+        isFlipping = false;
+      }, 50);
+    }, 300);
+  }
+  
   function handleNewGame() {
-    gameStore.reset();
-    gameStore.setPhase(PHASES.SETUP);
+    triggerFlip(() => {
+      gameStore.reset();
+      gameStore.setPhase(PHASES.SETUP);
+    });
   }
   
   function handleResumeGame() {
@@ -54,82 +67,95 @@
   
   function handleStartRegistration(event) {
     playerCount = event.detail.playerCount;
-    gameStore.setPhase(PHASES.REGISTRATION);
+    triggerFlip(() => {
+      gameStore.setPhase(PHASES.REGISTRATION);
+    });
   }
   
   function handleRegistrationComplete() {
-    gameStore.setPhase(PHASES.POSITIONING);
+    triggerFlip(() => {
+      gameStore.setPhase(PHASES.POSITIONING);
+    });
   }
   
   function handlePositioningComplete() {
-    gameStore.setPhase(PHASES.ROUND_SETUP);
+    triggerFlip(() => {
+      gameStore.setPhase(PHASES.ROUND_SETUP);
+    });
   }
   
   function handleRoundStarted() {
-    gameStore.setPhase(PHASES.BIDDING);
+    triggerFlip(() => {
+      gameStore.setPhase(PHASES.BIDDING);
+    });
   }
   
   function handleBiddingComplete() {
-    gameStore.setPhase(PHASES.PLAYING);
+    triggerFlip(() => {
+      gameStore.setPhase(PHASES.PLAYING);
+    });
   }
   
   function handlePlayingComplete() {
-    gameStore.setPhase(PHASES.SCORING);
+    triggerFlip(() => {
+      gameStore.setPhase(PHASES.SCORING);
+    });
   }
   
   function handleNextRound() {
-    if ($gameStore.currentRound.phase === PHASES.GAME_END) {
-      gameStore.setPhase(PHASES.GAME_END);
-    } else {
-      gameStore.setPhase(PHASES.ROUND_SETUP);
-    }
+    triggerFlip(() => {
+      if ($gameStore.currentRound.phase === PHASES.GAME_END) {
+        gameStore.setPhase(PHASES.GAME_END);
+      } else {
+        gameStore.setPhase(PHASES.ROUND_SETUP);
+      }
+    });
   }
   
   function handleGameEnd() {
-    gameStore.setPhase(PHASES.GAME_END);
+    triggerFlip(() => {
+      gameStore.setPhase(PHASES.GAME_END);
+    });
   }
 </script>
 
-<main>
-  {#if phase === PHASES.WELCOME}
-    <WelcomeScreen on:newGame={handleNewGame} on:resumeGame={handleResumeGame} />
-    
-  {:else if phase === PHASES.SETUP}
-    <GameSetup on:startRegistration={handleStartRegistration} />
-    
-  {:else if phase === PHASES.REGISTRATION}
-    <PlayerRegistration totalPlayers={playerCount} on:registrationComplete={handleRegistrationComplete} />
-    
-  {:else if phase === PHASES.POSITIONING}
-    <TablePosition on:positioningComplete={handlePositioningComplete} />
-    
-  {:else if phase === PHASES.ROUND_SETUP}
-    <RoundSetup on:roundStarted={handleRoundStarted} />
-    
-  {:else if phase === PHASES.BIDDING}
-    <BiddingPhase on:biddingComplete={handleBiddingComplete} />
-    
-  {:else if phase === PHASES.PLAYING}
-    <PlayingPhase on:playingComplete={handlePlayingComplete} />
-    
-  {:else if phase === PHASES.SCORING}
-    <ScoringPhase on:nextRound={handleNextRound} on:gameEnd={handleGameEnd} />
-    
-  {:else if phase === PHASES.GAME_END}
-    <ScoreBoard on:newGame={handleNewGame} />
-  {/if}
-</main>
+<div class="flip-container">
+  <div class="flip-panel" class:flipped={isFlipping}>
+    <main>
+      {#if phase === PHASES.WELCOME}
+        <WelcomeScreen on:newGame={handleNewGame} on:resumeGame={handleResumeGame} />
+        
+      {:else if phase === PHASES.SETUP}
+        <GameSetup on:startRegistration={handleStartRegistration} />
+        
+      {:else if phase === PHASES.REGISTRATION}
+        <PlayerRegistration totalPlayers={playerCount} on:registrationComplete={handleRegistrationComplete} />
+        
+      {:else if phase === PHASES.POSITIONING}
+        <TablePosition on:positioningComplete={handlePositioningComplete} />
+        
+      {:else if phase === PHASES.ROUND_SETUP}
+        <RoundSetup on:roundStarted={handleRoundStarted} />
+        
+      {:else if phase === PHASES.BIDDING}
+        <BiddingPhase on:biddingComplete={handleBiddingComplete} />
+        
+      {:else if phase === PHASES.PLAYING}
+        <PlayingPhase on:playingComplete={handlePlayingComplete} />
+        
+      {:else if phase === PHASES.SCORING}
+        <ScoringPhase on:nextRound={handleNextRound} on:gameEnd={handleGameEnd} />
+        
+      {:else if phase === PHASES.GAME_END}
+        <ScoreBoard on:newGame={handleNewGame} />
+      {/if}
+    </main>
+  </div>
+</div>
 
 <style>
-  :global(body) {
-    margin: 0;
-    padding: 0;
-    background: #1a1a2e;
-    color: white;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-  
   main {
     min-height: 100vh;
+    background: #1e293b;
   }
 </style>
