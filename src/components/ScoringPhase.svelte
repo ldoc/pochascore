@@ -1,8 +1,8 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { gameStore } from '../stores/gameState';
-  import { calculateRoundScores } from '../lib/scoring';
-  import { ROUNDS } from '../lib/constants';
+  import { calculateRoundScores, isPocha } from '../lib/scoring';
+  import { ROUNDS, PHASES, getTricksForRound, isSpecialRound } from '../lib/constants';
   
   const dispatch = createEventDispatcher();
   
@@ -20,10 +20,28 @@
   $: isLastRound = round.number >= ROUNDS.length;
   
   function handleNextRound() {
-    gameStore.updateScores(roundScores);
+    const tricksInRound = getTricksForRound(round.number);
+    const isSpecial = isSpecialRound(round.number);
+    
+    const adjustedScores = roundScores.map((score, index) => {
+      if (isSpecial) {
+        return { ...score, roundScore: 0 };
+      }
+      
+      const playerTricks = tricks[index]?.taken || 0;
+      const cardsDealt = tricksInRound;
+      
+      if (isPocha(playerTricks, tricksInRound, cardsDealt)) {
+        return { ...score, roundScore: score.roundScore * 2 };
+      }
+      
+      return score;
+    });
+    
+    gameStore.updateScores(adjustedScores);
     
     if (isLastRound) {
-      gameStore.setPhase('gameEnd');
+      gameStore.setPhase(PHASES.GAME_END);
       dispatch('gameEnd');
     } else {
       gameStore.nextRound();

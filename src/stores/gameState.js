@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { ROUNDS, PHASES } from '../lib/constants';
+import { ROUNDS, PHASES, getTricksForRound } from '../lib/constants';
 
 const STORAGE_KEY = 'pochascore_current_game';
 
@@ -11,7 +11,7 @@ function createInitialState() {
     players: [],
     currentRound: {
       number: 1,
-      tricksInRound: ROUNDS[0],
+      tricksInRound: getTricksForRound(1),
       trump: null,
       mano: null,
       phase: PHASES.WELCOME,
@@ -80,7 +80,7 @@ function createGameStore() {
         ...state,
         currentRound: {
           number: nextRoundNum,
-          tricksInRound: ROUNDS[nextRoundNum - 1],
+          tricksInRound: getTricksForRound(nextRoundNum),
           trump: null,
           mano: null,
           phase: PHASES.ROUND_SETUP,

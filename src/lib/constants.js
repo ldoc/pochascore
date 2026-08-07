@@ -23,6 +23,20 @@ export const ROUNDS = [
   9, 8, 7, 6, 5, 4, 3, 2, 'I', 'I', 'I', 'I'
 ];
 
+export function getTricksForRound(roundNumber) {
+  const value = ROUNDS[roundNumber - 1];
+  return typeof value === 'number' ? value : 0;
+}
+
+export function isSpecialRound(roundNumber) {
+  const value = ROUNDS[roundNumber - 1];
+  return typeof value === 'string';
+}
+
+export function getRoundType(roundNumber) {
+  return ROUNDS[roundNumber - 1];
+}
+
 export const PHASES = {
   WELCOME: 'welcome',
   SETUP: 'setup',

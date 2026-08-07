@@ -1,13 +1,13 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { gameStore } from '../stores/gameState';
-  import { ROUNDS, SUITS } from '../lib/constants';
+  import { SUITS, PHASES, getTricksForRound } from '../lib/constants';
   
   const dispatch = createEventDispatcher();
   
   $: round = $gameStore.currentRound;
   $: players = $gameStore.players;
-  $: tricksInRound = ROUNDS[round.number - 1];
+  $: tricksInRound = getTricksForRound(round.number);
   $: tricks = round.tricks || [];
   
   $: currentPlayerIndex = tricks.length;
@@ -20,7 +20,7 @@
   }
   
   function handleFinishRound() {
-    gameStore.setPhase('scoring');
+    gameStore.setPhase(PHASES.SCORING);
     dispatch('playingComplete');
   }
 </script>
@@ -78,7 +78,8 @@
   </div>
   
   {#if allTricksCounted}
-    <button class="primary" on:click={handleFinishRound}>
+    {@const totalTricks = tricks.reduce((sum, t) => sum + t.taken, 0)}
+    <button class="primary" on:click={handleFinishRound} disabled={totalTricks !== tricksInRound}>
       Calcular puntos
     </button>
   {/if}

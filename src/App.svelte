@@ -20,6 +20,19 @@
     if (saved) {
       gameStore.set(saved);
     }
+    
+    const handleBeforeUnload = (e) => {
+      const currentState = $gameStore;
+      if (currentState.players.length > 0) {
+        saveGame(currentState);
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   });
   
   $: phase = $gameStore.currentRound.phase;
@@ -85,7 +98,7 @@
     <GameSetup on:startRegistration={handleStartRegistration} />
     
   {:else if phase === PHASES.REGISTRATION}
-    <PlayerRegistration on:registrationComplete={handleRegistrationComplete} />
+    <PlayerRegistration totalPlayers={playerCount} on:registrationComplete={handleRegistrationComplete} />
     
   {:else if phase === PHASES.POSITIONING}
     <TablePosition on:positioningComplete={handlePositioningComplete} />

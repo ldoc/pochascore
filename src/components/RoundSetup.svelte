@@ -1,17 +1,17 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { gameStore } from '../stores/gameState';
-  import { SUITS, ROUNDS } from '../lib/constants';
+  import { SUITS, PHASES, getTricksForRound } from '../lib/constants';
   
   const dispatch = createEventDispatcher();
   
   $: round = $gameStore.currentRound;
   $: players = $gameStore.players;
-  $: tricksInRound = ROUNDS[round.number - 1];
+  $: tricksInRound = getTricksForRound(round.number);
   $: canStart = round.trump !== null && round.mano !== null;
   
   function handleStartRound() {
-    gameStore.setPhase('bidding');
+    gameStore.setPhase(PHASES.BIDDING);
     dispatch('roundStarted');
   }
 </script>

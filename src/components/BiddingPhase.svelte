@@ -1,13 +1,13 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import { gameStore } from '../stores/gameState';
-  import { ROUNDS } from '../lib/constants';
+  import { SUITS, PHASES, getTricksForRound } from '../lib/constants';
   
   const dispatch = createEventDispatcher();
   
   $: round = $gameStore.currentRound;
   $: players = $gameStore.players;
-  $: tricksInRound = ROUNDS[round.number - 1];
+  $: tricksInRound = getTricksForRound(round.number);
   $: bids = round.bids || [];
   
   $: currentBidderIndex = bids.length;
@@ -24,7 +24,7 @@
   
   function handleFinishBidding() {
     if (bidsValid) {
-      gameStore.setPhase('playing');
+      gameStore.setPhase(PHASES.PLAYING);
       dispatch('biddingComplete');
     }
   }
@@ -33,7 +33,7 @@
 <div class="bidding">
   <div class="header">
     <h2>Ronda {round.number}</h2>
-    <p class="info">Triunfo: {round.trump} | Mano: {players.find(p => p.id === round.mano)?.name}</p>
+    <p class="info">Triunfo: {SUITS[round.trump]?.name || 'Ninguno'} | Mano: {players.find(p => p.id === round.mano)?.name}</p>
     <p class="tricks">Bazas: {tricksInRound}</p>
   </div>
   
