@@ -1,0 +1,94 @@
+<h2>Layout de Paneles por Fase</h2>
+<p class="subtitle">Cada fase del juego es un panel completo que ocupa toda la pantalla</p>
+
+<div class="section">
+  <h3>Estructura de Panel</h3>
+  <p>Cada fase tiene una estructura consistente: Header + Contenido + Footer</p>
+</div>
+
+<div class="section">
+  <h3>Ejemplo: Panel de Bidding</h3>
+  <div class="mockup">
+    <div class="mockup-header">BiddingPhase - Panel Completo</div>
+    <div class="mockup-body" style="background: #1e293b; min-height: 400px; display: flex; flex-direction: column; padding: 0;">
+      
+      <!-- Header -->
+      <div style="background: #334155; padding: 1rem; border-bottom: 1px solid #475569;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="color: #94a3b8; font-size: 0.75rem;">Ronda 5</div>
+            <div style="color: #f8fafc; font-size: 1.25rem; font-weight: bold;">3 bazas</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="color: #94a3b8; font-size: 0.75rem;">Triunfo</div>
+            <div style="color: #f59e0b; font-size: 1.25rem;">🪙 Oros</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contenido -->
+      <div style="flex: 1; padding: 1.5rem;">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <div style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 0.5rem;">Jugador actual</div>
+          <div style="font-size: 3rem;">👩</div>
+          <div style="color: #f8fafc; font-size: 1.25rem; font-weight: bold;">Ana</div>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <div style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 0.5rem;">¿Cuántas bazas haces?</div>
+          <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+            <button style="width: 48px; height: 48px; border-radius: 8px; border: none; background: #475569; color: white; font-size: 1.25rem;">0</button>
+            <button style="width: 48px; height: 48px; border-radius: 8px; border: none; background: #475569; color: white; font-size: 1.25rem;">1</button>
+            <button style="width: 48px; height: 48px; border-radius: 8px; border: none; background: #f59e0b; color: white; font-size: 1.25rem; font-weight: bold;">2</button>
+            <button style="width: 48px; height: 48px; border-radius: 8px; border: none; background: #475569; color: white; font-size: 1.25rem;">3</button>
+          </div>
+        </div>
+        
+        <div style="background: #334155; border-radius: 8px; padding: 1rem;">
+          <div style="color: #94a3b8; font-size: 0.75rem; margin-bottom: 0.5rem;">Resumen de apuestas</div>
+          <div style="display: flex; justify-content: space-around;">
+            <div style="text-align: center;">
+              <div style="font-size: 1.25rem;">👨</div>
+              <div style="color: #f59e0b; font-weight: bold;">1</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 1.25rem;">🧑</div>
+              <div style="color: #f59e0b; font-weight: bold;">0</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 1.25rem;">👵</div>
+              <div style="color: #f59e0b; font-weight: bold;">?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div style="background: #334155; padding: 1rem; border-top: 1px solid #475569;">
+        <div style="display: flex; gap: 0.5rem;">
+          <button style="flex: 1; background: #f59e0b; color: white; border: none; padding: 0.75rem; border-radius: 6px; font-weight: bold;">Siguiente jugador</button>
+          <button style="background: transparent; color: #94a3b8; border: 1px solid #64748b; padding: 0.75rem 1rem; border-radius: 6px;">Cancelar</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Componentes del Layout</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+    <div style="background: #334155; border-radius: 8px; padding: 1rem;">
+      <div style="color: #f59e0b; font-weight: bold; margin-bottom: 0.5rem;">Header</div>
+      <div style="color: #94a3b8; font-size: 0.875rem;">Info de ronda, triunfo, mano</div>
+    </div>
+    <div style="background: #334155; border-radius: 8px; padding: 1rem;">
+      <div style="color: #f59e0b; font-weight: bold; margin-bottom: 0.5rem;">Contenido</div>
+      <div style="color: #94a3b8; font-size: 0.875rem;">Interacción principal</div>
+    </div>
+    <div style="background: #334155; border-radius: 8px; padding: 1rem;">
+      <div style="color: #f59e0b; font-weight: bold; margin-bottom: 0.5rem;">Footer</div>
+      <div style="color: #94a3b8; font-size: 0.875rem;">Acciones principales</div>
+    </div>
+  </div>
+</div>
