@@ -23,93 +23,38 @@
   }
 </script>
 
-<div class="setup">
-  <h2>Nueva partida</h2>
+<div class="panel">
+  <div class="panel-header">
+    <h2 class="text-lg font-bold text-bone text-center">Nueva partida</h2>
+  </div>
   
-  <div class="player-selector">
-    <label>Nº de jugadores</label>
-    
-    <div class="counter">
-      <button on:click={decrement} disabled={playerCount <= minPlayers}>
-        −
-      </button>
-      <span class="count">{playerCount}</span>
-      <button on:click={increment} disabled={playerCount >= maxPlayers}>
-        +
-      </button>
+  <div class="panel-content flex flex-col items-center justify-center gap-8">
+    <div class="w-full max-w-sm text-center animate-slide-up">
+      <label class="block text-gray-light mb-4 text-sm">Nº de jugadores</label>
+      
+      <div class="flex items-center justify-center gap-6">
+        <button 
+          class="counter-btn" 
+          on:click={decrement}
+          disabled={playerCount <= minPlayers}
+        >
+          −
+        </button>
+        <span class="counter-value">{playerCount}</span>
+        <button 
+          class="counter-btn" 
+          on:click={increment}
+          disabled={playerCount >= maxPlayers}
+        >
+          +
+        </button>
+      </div>
     </div>
   </div>
   
-  <button class="primary" on:click={handleStart}>
-    Comenzar
-  </button>
+  <div class="panel-footer">
+    <button class="btn-primary" on:click={handleStart}>
+      Comenzar
+    </button>
+  </div>
 </div>
-
-<style>
-  .setup {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    gap: 2rem;
-  }
-  
-  h2 {
-    font-size: 1.8rem;
-  }
-  
-  .player-selector {
-    text-align: center;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 1rem;
-    color: #a0a0a0;
-  }
-  
-  .counter {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-  
-  button {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
-    border: none;
-    border-radius: 50%;
-    background: #16213e;
-    color: white;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  
-  button:hover:not(:disabled) {
-    background: #0f3460;
-  }
-  
-  button:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-  
-  .count {
-    font-size: 3rem;
-    font-weight: bold;
-    min-width: 80px;
-  }
-  
-  .primary {
-    width: 100%;
-    max-width: 300px;
-    padding: 1rem;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    background: #e94560;
-    color: white;
-  }
-</style>
