@@ -25,214 +25,66 @@
   }
 </script>
 
-<div class="playing">
-  <div class="header">
-    <h2>Fase de juego</h2>
-    <div class="round-info">
-      <span class="trump">{SUITS[round.trump]?.emoji} {SUITS[round.trump]?.name}</span>
-      <span class="mano">Mano: {players.find(p => p.id === round.mano)?.name}</span>
+<div class="panel">
+  <div class="panel-header">
+    <h2 class="text-lg font-bold text-bone text-center">Fase de juego</h2>
+    <div class="flex justify-center gap-4 mt-1 text-sm">
+      <span class="text-gold">{SUITS[round.trump]?.emoji} {SUITS[round.trump]?.name}</span>
+      <span class="text-gray-light">Mano: {players.find(p => p.id === round.mano)?.name}</span>
     </div>
-    <p class="tricks">Bazas: {tricksInRound}</p>
+    <p class="text-rose text-sm text-center mt-1">Bazas: {tricksInRound}</p>
   </div>
   
-  {#if !allTricksCounted}
-    <div class="counter">
-      <h3>¿Cuántas bazas has hecho?</h3>
-      <div class="current-player">
-        <span class="avatar">{currentPlayer.avatar}</span>
-        <span class="name">{currentPlayer.name}</span>
-      </div>
-      
-      <div class="trick-buttons">
-        {#each Array(tricksInRound + 1) as _, i}
-          <button class="trick-btn" on:click={() => countTricks(i)}>
-            {i}
-          </button>
-        {/each}
-      </div>
-    </div>
-  {/if}
-  
-  <div class="tricks-summary">
-    <h3>Bazas contadas</h3>
-    <div class="tricks-list">
-      {#each tricks as trick}
-        {@const player = players.find(p => p.id === trick.playerId)}
-        <div class="trick-item">
-          <span>{player.avatar} {player.name}</span>
-          <span class="trick-value">{trick.taken}</span>
+  <div class="panel-content flex flex-col gap-4 animate-fade-in">
+    {#if !allTricksCounted}
+      <div class="w-full max-w-sm mx-auto text-center">
+        <h3 class="text-gray-light text-sm mb-3">¿Cuántas bazas has hecho?</h3>
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <span class="avatar-large">{currentPlayer.avatar}</span>
+          <span class="text-xl font-bold text-bone">{currentPlayer.name}</span>
         </div>
-      {/each}
-    </div>
-    
-    {#if allTricksCounted}
-      {@const totalTricks = tricks.reduce((sum, t) => sum + t.taken, 0)}
-      <div class="total" class:invalid={totalTricks !== tricksInRound}>
-        <span>Total bazas:</span>
-        <span>{totalTricks}</span>
-        {#if totalTricks !== tricksInRound}
-          <span class="error">Debe ser {tricksInRound}</span>
-        {/if}
+        
+        <div class="flex flex-wrap justify-center gap-2">
+          {#each Array(tricksInRound + 1) as _, i}
+            <button class="bid-btn" on:click={() => countTricks(i)}>
+              {i}
+            </button>
+          {/each}
+        </div>
       </div>
     {/if}
+    
+    <div class="card w-full max-w-sm mx-auto">
+      <h3 class="text-gray-light text-sm mb-3">Bazas contadas</h3>
+      <div class="flex flex-col gap-2">
+        {#each tricks as trick}
+          {@const player = players.find(p => p.id === trick.playerId)}
+          <div class="list-item">
+            <span class="text-bone">{player.avatar} {player.name}</span>
+            <span class="list-item-value">{trick.taken}</span>
+          </div>
+        {/each}
+      </div>
+      
+      {#if allTricksCounted}
+        {@const totalTricks = tricks.reduce((sum, t) => sum + t.taken, 0)}
+        <div class="flex justify-between items-center mt-3 pt-3 border-t border-border">
+          <span class="text-gray-light">Total bazas:</span>
+          <span class="font-bold" class:text-rose={totalTricks !== tricksInRound} class:text-bone={totalTricks === tricksInRound}>{totalTricks}</span>
+        </div>
+        {#if totalTricks !== tricksInRound}
+          <p class="error-text mt-2 text-center">Debe ser {tricksInRound}</p>
+        {/if}
+      {/if}
+    </div>
   </div>
   
   {#if allTricksCounted}
     {@const totalTricks = tricks.reduce((sum, t) => sum + t.taken, 0)}
-    <button class="primary" on:click={handleFinishRound} disabled={totalTricks !== tricksInRound}>
-      Calcular puntos
-    </button>
+    <div class="panel-footer animate-slide-up">
+      <button class="btn-primary" on:click={handleFinishRound} disabled={totalTricks !== tricksInRound}>
+        Calcular puntos
+      </button>
+    </div>
   {/if}
 </div>
-
-<style>
-  .playing {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2rem;
-    gap: 1.5rem;
-  }
-  
-  .header {
-    text-align: center;
-  }
-  
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .round-info {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    font-size: 0.9rem;
-  }
-  
-  .trump {
-    color: #FFD700;
-  }
-  
-  .mano {
-    color: #a0a0a0;
-  }
-  
-  .tricks {
-    color: #e94560;
-    font-size: 1.1rem;
-    margin-top: 0.5rem;
-  }
-  
-  .counter {
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  h3 {
-    font-size: 1rem;
-    color: #a0a0a0;
-    margin-bottom: 1rem;
-  }
-  
-  .current-player {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .avatar {
-    font-size: 2rem;
-  }
-  
-  .name {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  
-  .trick-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  
-  .trick-btn {
-    width: 50px;
-    height: 50px;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 8px;
-    background: #16213e;
-    color: white;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  
-  .trick-btn:hover {
-    background: #0f3460;
-  }
-  
-  .tricks-summary {
-    width: 100%;
-    max-width: 400px;
-    background: #16213e;
-    border-radius: 12px;
-    padding: 1rem;
-  }
-  
-  .tricks-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .trick-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem;
-    background: #1a1a2e;
-    border-radius: 8px;
-  }
-  
-  .trick-value {
-    font-weight: bold;
-    color: #e94560;
-  }
-  
-  .total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #0f3460;
-    font-weight: bold;
-  }
-  
-  .total.invalid {
-    color: #e94560;
-  }
-  
-  .error {
-    font-size: 0.8rem;
-    color: #e94560;
-  }
-  
-  .primary {
-    width: 100%;
-    max-width: 300px;
-    padding: 1rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    background: #e94560;
-    color: white;
-    cursor: pointer;
-    margin-top: auto;
-  }
-</style>
