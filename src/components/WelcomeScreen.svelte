@@ -15,73 +15,26 @@
   }
 </script>
 
-<div class="welcome">
-  <h1>🃏 Pochascore</h1>
-  <p>Tu marcador de Pocha</p>
-  
-  <div class="buttons">
-    <button class="primary" on:click={handleNewGame}>
-      Nueva partida
-    </button>
-    
-    {#if canResume}
-      <button class="secondary" on:click={handleResumeGame}>
-        Recuperar partida
-      </button>
-    {/if}
+<div class="panel">
+  <div class="panel-content flex items-center justify-center">
+    <div class="w-full max-w-sm mx-auto text-center animate-fade-in">
+      <div class="mb-6">
+        <span class="text-7xl block mb-4 animate-pulse">🃏</span>
+        <h1 class="text-3xl font-bold text-bone mb-2">Pochascore</h1>
+        <p class="text-gray-light">Tu marcador de Pocha</p>
+      </div>
+      
+      <div class="flex flex-col gap-3">
+        <button class="btn-primary" on:click={handleNewGame}>
+          Nueva partida
+        </button>
+        
+        {#if canResume}
+          <button class="btn-secondary" on:click={handleResumeGame}>
+            Recuperar partida
+          </button>
+        {/if}
+      </div>
+    </div>
   </div>
 </div>
-
-<style>
-  .welcome {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    text-align: center;
-  }
-  
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  p {
-    color: #a0a0a0;
-    margin-bottom: 2rem;
-  }
-  
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    max-width: 300px;
-  }
-  
-  button {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.1s, opacity 0.1s;
-  }
-  
-  button:active {
-    transform: scale(0.98);
-  }
-  
-  .primary {
-    background: #e94560;
-    color: white;
-  }
-  
-  .secondary {
-    background: #16213e;
-    color: white;
-    border: 1px solid #0f3460;
-  }
-</style>
