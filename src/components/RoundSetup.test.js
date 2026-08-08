@@ -5,6 +5,16 @@ import RoundSetup from './RoundSetup.svelte';
 import { gameStore } from '../stores/gameState';
 import { SUITS, ROUNDS, PHASES } from '../lib/constants';
 
+vi.mock('../lib/voice', () => ({
+  speak: vi.fn(),
+  isMuted: { subscribe: vi.fn(() => vi.fn()) },
+  toggleMute: vi.fn()
+}));
+
+vi.mock('../lib/swipe', () => ({
+  setupSwipe: vi.fn(() => ({ destroy: vi.fn() }))
+}));
+
 afterEach(() => {
   cleanup();
 });
@@ -12,21 +22,22 @@ afterEach(() => {
 describe('RoundSetup', () => {
   beforeEach(() => {
     gameStore.reset();
-    // Set up players for testing
     gameStore.addPlayer({ id: 1, name: 'Ana', avatar: '👩', color: '#FF6B6B', score: 0 });
     gameStore.addPlayer({ id: 2, name: 'Luis', avatar: '👨', color: '#4ECDC4', score: 0 });
     gameStore.addPlayer({ id: 3, name: 'Carmen', avatar: '🧑', color: '#45B7D1', score: 0 });
     gameStore.addPlayer({ id: 4, name: 'Pedro', avatar: '👴', color: '#96CEB4', score: 0 });
+    gameStore.setMano(1);
   });
 
-  it('displays the correct round number', () => {
+  it('displays the round label and number', () => {
     render(RoundSetup);
-    expect(screen.getByText('Ronda 1')).toBeTruthy();
+    expect(screen.getByText('Ronda')).toBeTruthy();
+    expect(screen.getByText('1')).toBeTruthy();
   });
 
   it('displays the correct number of tricks for the round', () => {
     render(RoundSetup);
-    expect(screen.getByText(`${ROUNDS[0]} bazas`)).toBeTruthy();
+    expect(screen.getByText('1 baza')).toBeTruthy();
   });
 
   it('renders all suit options', () => {
@@ -37,71 +48,28 @@ describe('RoundSetup', () => {
     });
   });
 
-  it('renders all player options for mano selection', () => {
+  it('displays the mano player with role', () => {
     render(RoundSetup);
-    const players = getStoreValue().players;
-    players.forEach(player => {
-      expect(screen.getByText(player.name)).toBeTruthy();
-      expect(screen.getByText(player.avatar)).toBeTruthy();
-    });
-  });
-
-  it('disables start button when trump is not selected', () => {
-    render(RoundSetup);
-    const button = screen.getByRole('button', { name: /Empezar apuestas/ });
-    expect(button.disabled).toBe(true);
+    expect(screen.getByText('Ana')).toBeTruthy();
+    expect(screen.getByText('👩')).toBeTruthy();
+    expect(screen.getByText('Tú repartes')).toBeTruthy();
   });
 
   it('selects a trump suit on click', async () => {
     render(RoundSetup);
     const suitButton = screen.getByText('Oros');
     await fireEvent.click(suitButton);
-    
+
     const state = getStoreValue();
     expect(state.currentRound.trump).toBe('oros');
   });
 
-  it('selects a mano player on click', async () => {
+  it('marks selected trump suit visually', async () => {
     render(RoundSetup);
-    const playerButton = screen.getByText('Ana');
-    await fireEvent.click(playerButton);
-    
-    const state = getStoreValue();
-    expect(state.currentRound.mano).toBe(1);
-  });
-
-  it('enables start button when both trump and mano are selected', async () => {
-    render(RoundSetup);
-    
-    // Select trump
-    const suitButton = screen.getByText('Oros');
+    const suitButton = screen.getByText('Oros').closest('.suit-btn');
     await fireEvent.click(suitButton);
-    
-    // Select mano
-    const playerButton = screen.getByText('Ana');
-    await fireEvent.click(playerButton);
-    
-    const button = screen.getByRole('button', { name: /Empezar apuestas/ });
-    expect(button.disabled).toBe(false);
-  });
 
-  it('changes phase to bidding when start button is clicked', async () => {
-    render(RoundSetup);
-    
-    // Select trump
-    const suitButton = screen.getByText('Oros');
-    await fireEvent.click(suitButton);
-    
-    // Select mano
-    const playerButton = screen.getByText('Ana');
-    await fireEvent.click(playerButton);
-    
-    // Click start
-    const button = screen.getByRole('button', { name: /Empezar apuestas/ });
-    await fireEvent.click(button);
-    
-    const state = getStoreValue();
-    expect(state.currentRound.phase).toBe(PHASES.BIDDING);
+    expect(suitButton.classList.contains('selected')).toBe(true);
   });
 });
 
