@@ -55,6 +55,10 @@
     gameStore.setPhase(PHASES.SETUP);
   }
   
+  function handleBackToWelcome() {
+    gameStore.setPhase(PHASES.WELCOME);
+  }
+  
   function handleNewGame() {
     gameStore.reset();
     gameStore.setPhase(PHASES.REGISTRATION);
@@ -81,6 +85,26 @@
   function handleBackFromRegistration() {
     gameStore.update(state => ({ ...state, players: [] }));
     gameStore.setPhase(PHASES.REGISTRATION);
+  }
+  
+  function handleBackToSetup() {
+    gameStore.setPhase(PHASES.SETUP);
+  }
+  
+  function handleBackToRegistration() {
+    gameStore.setPhase(PHASES.POSITIONING);
+  }
+  
+  function handleBackToRoundSetup() {
+    gameStore.setPhase(PHASES.ROUND_SETUP);
+  }
+  
+  function handleBackToBidding() {
+    gameStore.setPhase(PHASES.BIDDING);
+  }
+  
+  function handleBackToPlaying() {
+    gameStore.setPhase(PHASES.PLAYING);
   }
   
   function handlePositioningComplete() {
@@ -128,25 +152,25 @@
       <WelcomeScreen on:continue={handleContinue} />
       
     {:else if phase === PHASES.SETUP}
-      <GameOptions on:newGame={handleNewGame} on:continueGame={handleResumeGame} />
+      <GameOptions on:newGame={handleNewGame} on:continueGame={handleResumeGame} on:back={handleBackToWelcome} />
       
     {:else if phase === PHASES.REGISTRATION}
-      <PlayerCount on:select={handleSelectPlayerCount} />
+      <PlayerCount on:select={handleSelectPlayerCount} on:back={handleBackToSetup} />
       
     {:else if phase === PHASES.POSITIONING}
       <PlayerRegistration totalPlayers={playerCount} on:complete={handleRegistrationComplete} on:back={handleBackFromRegistration} />
       
     {:else if phase === PHASES.ROUND_SETUP}
-      <RoundSetup on:roundStarted={handleRoundStarted} />
+      <RoundSetup on:roundStarted={handleRoundStarted} on:back={handleBackToRegistration} />
       
     {:else if phase === PHASES.BIDDING}
-      <BiddingPhase on:biddingComplete={handleBiddingComplete} />
+      <BiddingPhase on:biddingComplete={handleBiddingComplete} on:back={handleBackToRoundSetup} />
       
     {:else if phase === PHASES.PLAYING}
-      <InGame on:complete={handleInGameComplete} />
+      <InGame on:complete={handleInGameComplete} on:back={handleBackToBidding} />
       
     {:else if phase === PHASES.SCORING}
-      <ResultsEntry on:complete={handleResultsComplete} />
+      <ResultsEntry on:complete={handleResultsComplete} on:back={handleBackToPlaying} />
       
     {:else if phase === PHASES.GAME_END}
       <FinalResults on:newGame={handleFinalNewGame} />

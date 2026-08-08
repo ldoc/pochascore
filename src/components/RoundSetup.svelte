@@ -28,7 +28,7 @@
     const manoName = manoPlayer ? manoPlayer.name : 'Jugador';
     speak(`Ronda ${round.number}. ${manoName}, tú repartes. Elige triunfo.`);
 
-    const swipe = setupSwipe(screenEl, handleSwipeLeft, () => {});
+    const swipe = setupSwipe(screenEl, handleSwipeLeft, () => dispatch('back'));
     return () => swipe.destroy();
   });
 </script>

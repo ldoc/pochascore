@@ -60,7 +60,7 @@
   onMount(() => {
     speak(`Ronda ${round.number}. Empiezan las apuestas.`);
 
-    const swipe = setupSwipe(screenEl, handleSwipeLeft, () => {});
+    const swipe = setupSwipe(screenEl, handleSwipeLeft, () => dispatch('back'));
     return () => swipe.destroy();
   });
 </script>

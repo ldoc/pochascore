@@ -28,7 +28,7 @@
     const swipe = setupSwipe(
       screenEl,
       () => dispatch('select', { count: playerCount }),
-      () => {}
+      () => dispatch('back')
     );
 
     return () => swipe.destroy();

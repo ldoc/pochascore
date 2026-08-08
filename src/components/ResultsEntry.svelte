@@ -55,7 +55,7 @@
     
     const swipe = setupSwipe(screenEl, () => {
       if (canContinue) handleFinishRound();
-    }, () => {});
+    }, () => dispatch('back'));
     return () => swipe.destroy();
   });
 </script>

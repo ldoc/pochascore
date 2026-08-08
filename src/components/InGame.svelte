@@ -18,7 +18,7 @@
     
     const swipe = setupSwipe(screenEl, () => {
       dispatch('complete');
-    }, () => {});
+    }, () => dispatch('back'));
     return () => swipe.destroy();
   });
 </script>
