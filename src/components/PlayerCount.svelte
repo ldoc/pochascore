@@ -89,7 +89,6 @@
   }
 
   function getItemStyle(index) {
-    const value = items[index];
     const containerHeight = scrollContainer?.clientHeight || 200;
     const offset = (containerHeight - itemHeight) / 2;
     const itemTop = index * itemHeight;
@@ -120,53 +119,69 @@
   }
 </script>
 
-<div class="panel">
-  <div class="panel-header">
-    <h2 class="text-lg font-bold text-bone text-center">Nº de jugadores</h2>
-  </div>
+<div class="screen">
+  <h2 class="title">Nº de jugadores</h2>
 
-  <div class="panel-content flex flex-col items-center justify-center">
-    <div class="scroll-wrapper">
-      <div class="highlight-zone top"></div>
-      
-      <div
-        class="scroll-container"
-        bind:this={scrollContainer}
-        on:mousedown={handleMouseDown}
-        on:mousemove={handleMouseMove}
-        on:mouseup={handleMouseUp}
-        on:mouseleave={handleMouseUp}
-        on:touchstart={handleTouchStart}
-        on:touchmove={handleTouchMove}
-        on:touchend={handleTouchEnd}
-        role="listbox"
-        aria-label="Seleccionar número de jugadores"
-      >
-        <div class="spacer"></div>
-        {#each items as item, index}
-          <div
-            class="scroll-item"
-            style={getItemStyle(index)}
-            role="option"
-            aria-selected={item === playerCount}
-          >
-            {item}
-          </div>
-        {/each}
-        <div class="spacer"></div>
-      </div>
-
-      <div class="highlight-zone bottom"></div>
+  <div class="picker-wrapper">
+    <div class="highlight-zone top"></div>
+    
+    <div
+      class="scroll-container"
+      bind:this={scrollContainer}
+      on:mousedown={handleMouseDown}
+      on:mousemove={handleMouseMove}
+      on:mouseup={handleMouseUp}
+      on:mouseleave={handleMouseUp}
+      on:touchstart={handleTouchStart}
+      on:touchmove={handleTouchMove}
+      on:touchend={handleTouchEnd}
+      role="listbox"
+      aria-label="Seleccionar número de jugadores"
+    >
+      <div class="spacer"></div>
+      {#each items as item, index}
+        <div
+          class="scroll-item"
+          style={getItemStyle(index)}
+          role="option"
+          aria-selected={item === playerCount}
+        >
+          {item}
+        </div>
+      {/each}
+      <div class="spacer"></div>
     </div>
+
+    <div class="highlight-zone bottom"></div>
   </div>
+
+  <p class="hint">Desliza para confirmar</p>
 </div>
 
 <style>
-  .scroll-wrapper {
+  .screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    text-align: center;
+    user-select: none;
+    gap: 2rem;
+  }
+
+  .title {
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    font-weight: 700;
+    color: #f8fafc;
+    margin: 0;
+  }
+
+  .picker-wrapper {
     position: relative;
-    width: 100%;
-    max-width: 160px;
-    height: clamp(180px, 30vh, 220px);
+    width: 140px;
+    height: 200px;
     overflow: hidden;
   }
 
@@ -214,5 +229,16 @@
 
   .highlight-zone.bottom {
     bottom: calc(50% - 28px);
+  }
+
+  .hint {
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    color: #aaa;
+    animation: blink 1.5s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
   }
 </style>
