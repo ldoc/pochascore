@@ -14,8 +14,20 @@
   $: currentPlayer = players[currentPlayerIndex];
   $: allTricksCounted = currentPlayerIndex >= players.length;
   
+  $: totalTricks = tricks.reduce((sum, t) => sum + t.taken, 0);
+  $: tricksValid = totalTricks === tricksInRound;
+  
+  // Last player needs to recount when total is invalid
+  $: needsRecount = allTricksCounted && !tricksValid;
+  $: recounter = needsRecount ? players[players.length - 1] : null;
+  
   function countTricks(taken) {
     const newTricks = [...tricks, { playerId: currentPlayer.id, taken }];
+    gameStore.setTricks(newTricks);
+  }
+  
+  function recount(taken) {
+    const newTricks = [...tricks.slice(0, -1), { playerId: recounter.id, taken }];
     gameStore.setTricks(newTricks);
   }
   
@@ -54,35 +66,51 @@
       </div>
     {/if}
     
+    {#if needsRecount}
+      <div class="w-full max-w-sm mx-auto text-center">
+        <div class="error-card mb-4">
+          <p class="text-rose font-bold">Total: {totalTricks}</p>
+          <p class="text-gray-light text-sm mt-1">Debe ser {tricksInRound}</p>
+        </div>
+        <h3 class="text-gray-light text-sm mb-3">{recounter.name}, elige otra cantidad</h3>
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <span class="avatar-large">{recounter.avatar}</span>
+          <span class="text-xl font-bold text-bone">{recounter.name}</span>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">
+          {#each Array(tricksInRound + 1) as _, i}
+            <button class="bid-btn" on:click={() => recount(i)}>
+              {i}
+            </button>
+          {/each}
+        </div>
+      </div>
+    {/if}
+    
     <div class="card w-full max-w-sm mx-auto">
       <h3 class="text-gray-light text-sm mb-3">Bazas contadas</h3>
       <div class="flex flex-col gap-2">
-        {#each tricks as trick}
+        {#each tricks as trick, index}
           {@const player = players.find(p => p.id === trick.playerId)}
-          <div class="list-item">
+          <div class="list-item" class:highlight-row={needsRecount && index === tricks.length - 1}>
             <span class="text-bone">{player.avatar} {player.name}</span>
             <span class="list-item-value">{trick.taken}</span>
           </div>
         {/each}
       </div>
       
-      {#if allTricksCounted}
-        {@const totalTricks = tricks.reduce((sum, t) => sum + t.taken, 0)}
+      {#if allTricksCounted && !needsRecount}
         <div class="flex justify-between items-center mt-3 pt-3 border-t border-border">
           <span class="text-gray-light">Total bazas:</span>
-          <span class="font-bold" class:text-rose={totalTricks !== tricksInRound} class:text-bone={totalTricks === tricksInRound}>{totalTricks}</span>
+          <span class="font-bold text-bone">{totalTricks}</span>
         </div>
-        {#if totalTricks !== tricksInRound}
-          <p class="error-text mt-2 text-center">Debe ser {tricksInRound}</p>
-        {/if}
       {/if}
     </div>
   </div>
   
-  {#if allTricksCounted}
-    {@const totalTricks = tricks.reduce((sum, t) => sum + t.taken, 0)}
+  {#if allTricksCounted && tricksValid}
     <div class="panel-footer animate-slide-up">
-      <button class="btn-primary" on:click={handleFinishRound} disabled={totalTricks !== tricksInRound}>
+      <button class="btn-primary" on:click={handleFinishRound}>
         Calcular puntos
       </button>
     </div>
