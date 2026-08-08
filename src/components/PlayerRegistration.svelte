@@ -13,7 +13,6 @@
   let currentIndex = 0;
   let nick = ['', '', '', ''];
   let selectedAvatar = AVATARS[0];
-  let selectedColor = PLAYER_COLORS[0];
   let slotIndex = 0;
 
   $: playerNumber = currentIndex + 1;
@@ -59,7 +58,7 @@
       id: currentIndex + 1,
       name: nick.join(''),
       avatar: selectedAvatar,
-      color: selectedColor,
+      color: PLAYER_COLORS[currentIndex % PLAYER_COLORS.length],
       position: null,
       score: 0
     });
@@ -71,7 +70,6 @@
       nick = ['', '', '', ''];
       slotIndex = 0;
       selectedAvatar = AVATARS[currentIndex % AVATARS.length];
-      selectedColor = PLAYER_COLORS[currentIndex % PLAYER_COLORS.length];
       speak(`Jugador ${currentIndex + 1}, introduce tu nombre`);
     }
   }
@@ -95,21 +93,6 @@
         >
           {avatar}
         </button>
-      {/each}
-    </div>
-  </div>
-
-  <div class="section">
-    <span class="section-label">Color</span>
-    <div class="color-grid">
-      {#each PLAYER_COLORS as color}
-        <button
-          class="color-btn"
-          class:selected={selectedColor === color}
-          style="background: {color}"
-          aria-label="Color {color}"
-          on:click={() => selectedColor = color}
-        ></button>
       {/each}
     </div>
   </div>
@@ -198,27 +181,6 @@
 
   .avatar-btn.selected {
     border-color: #f59e0b;
-  }
-
-  .color-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-    justify-items: center;
-  }
-
-  .color-btn {
-    max-width: 32px;
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-
-  .color-btn.selected {
-    border-color: #f8fafc;
   }
 
   .nick-display {
