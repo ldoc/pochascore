@@ -88,36 +88,6 @@
     playerCount = items[clampedIndex];
     scrollToValue(playerCount);
   }
-
-  function getItemStyle(index) {
-    const containerHeight = scrollContainer?.clientHeight || 200;
-    const offset = (containerHeight - itemHeight) / 2;
-    const itemTop = index * itemHeight;
-    const scrollPos = scrollContainer?.scrollTop || 0;
-    const centerPos = scrollPos + offset;
-    const distance = Math.abs(itemTop - centerPos);
-
-    let fontSize, fontWeight, color, opacity;
-
-    if (distance < itemHeight / 2) {
-      fontSize = '3rem';
-      fontWeight = 800;
-      color = '#f0f0f0';
-      opacity = 1;
-    } else if (distance < itemHeight * 1.5) {
-      fontSize = '1.8rem';
-      fontWeight = 500;
-      color = '#444';
-      opacity = 0.7;
-    } else {
-      fontSize = '1.8rem';
-      fontWeight = 500;
-      color = '#444';
-      opacity = 0.3;
-    }
-
-    return `font-size: ${fontSize}; font-weight: ${fontWeight}; color: ${color}; opacity: ${opacity};`;
-  }
 </script>
 
 <div class="screen">
@@ -140,10 +110,11 @@
       aria-label="Seleccionar número de jugadores"
     >
       <div class="spacer"></div>
-      {#each items as item, index}
+        {#each items as item, index}
         <div
           class="scroll-item"
-          style={getItemStyle(index)}
+          class:selected={item === playerCount}
+          class:nearby={Math.abs(item - playerCount) === 1}
           role="option"
           aria-selected={item === playerCount}
         >
@@ -208,6 +179,24 @@
     justify-content: center;
     transition: font-size 0.2s, font-weight 0.2s, color 0.2s, opacity 0.2s;
     font-variant-numeric: tabular-nums;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #444;
+    opacity: 0.3;
+  }
+
+  .scroll-item.nearby {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #444;
+    opacity: 0.7;
+  }
+
+  .scroll-item.selected {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #f0f0f0;
+    opacity: 1;
   }
 
   .spacer {
