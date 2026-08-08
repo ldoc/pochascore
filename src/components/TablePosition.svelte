@@ -8,6 +8,7 @@
   $: totalPlayers = players.length;
   $: positionedPlayers = players.filter(p => p.position !== null);
   $: allPositioned = positionedPlayers.length === totalPlayers;
+  $: currentPlayer = players.find(p => p.position === null);
   
   function getPlayerAtPosition(pos) {
     return players.find(p => p.position === pos);
@@ -16,11 +17,9 @@
   function handleSeatClick(position) {
     const existing = getPlayerAtPosition(position);
     if (existing) return;
+    if (!currentPlayer) return;
     
-    const unpositioned = players.find(p => p.position === null);
-    if (unpositioned) {
-      gameStore.updatePlayer(unpositioned.id, { position });
-    }
+    gameStore.updatePlayer(currentPlayer.id, { position });
   }
   
   function handleFinish() {
@@ -38,10 +37,16 @@
 
 <div class="panel">
   <div class="panel-header">
-    <h2 class="text-lg font-bold text-bone text-center">Toca para sentarte</h2>
-    <p class="text-gray-light text-sm text-center mt-1">
-      {positionedPlayers.length} de {totalPlayers} jugadores
-    </p>
+    <h2 class="text-lg font-bold text-bone text-center">Elige tu sitio</h2>
+    {#if currentPlayer}
+      <div class="flex items-center justify-center gap-3 mt-2">
+        <span class="avatar-medium">{currentPlayer.avatar}</span>
+        <div>
+          <p class="text-bone font-bold">{currentPlayer.name}</p>
+          <p class="text-gold text-sm">Toca un asiento vacío</p>
+        </div>
+      </div>
+    {/if}
   </div>
   
   <div class="panel-content flex items-center justify-center">
@@ -58,13 +63,13 @@
           style={getPositionStyle(i)}
           style:border-color={player ? player.color : ''}
           on:click={() => handleSeatClick(i)}
-          disabled={player}
+          disabled={!!player || !currentPlayer}
         >
           {#if player}
             <span class="avatar-small">{player.avatar}</span>
             <span class="text-gray-light text-xs mt-1">{player.name}</span>
           {:else}
-            <span class="avatar-small opacity-30">👤</span>
+            <span class="avatar-small opacity-30">💺</span>
           {/if}
         </button>
       {/each}
