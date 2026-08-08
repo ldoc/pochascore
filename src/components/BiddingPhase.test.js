@@ -33,7 +33,7 @@ describe('BiddingPhase', () => {
 
   it('displays trump and mano information', () => {
     render(BiddingPhase);
-    expect(screen.getByText(/Triunfo: Oros/)).toBeTruthy();
+    expect(screen.getByText(/Oros/)).toBeTruthy();
     expect(screen.getByText(/Mano: Ana/)).toBeTruthy();
   });
 

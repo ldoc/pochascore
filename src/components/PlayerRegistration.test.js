@@ -35,7 +35,7 @@ describe('PlayerRegistration', () => {
 
   it('renders color options', () => {
     render(PlayerRegistration);
-    const colorButtons = document.querySelectorAll('.color');
+    const colorButtons = document.querySelectorAll('.color-btn');
     expect(colorButtons.length).toBe(PLAYER_COLORS.length);
   });
 

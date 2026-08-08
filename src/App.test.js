@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/svelte';
+import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/svelte';
 import App from './App.svelte';
 import { gameStore } from './stores/gameState';
 import { PHASES } from './lib/constants';
@@ -50,7 +50,9 @@ describe('App', () => {
     render(App);
     const button = screen.getByText('Nueva partida');
     await fireEvent.click(button);
-    expect(screen.getByText('Comenzar')).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText('Comenzar')).toBeTruthy();
+    });
   });
 
   it('navigates through full game flow', async () => {
@@ -61,12 +63,16 @@ describe('App', () => {
     await fireEvent.click(newGameBtn);
     
     // Setup phase - GameSetup shows "Nueva partida" as h2 and "Comenzar" button
-    expect(screen.getByText('Comenzar')).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText('Comenzar')).toBeTruthy();
+    });
     const startBtn = screen.getByText('Comenzar');
     await fireEvent.click(startBtn);
     
     // Registration phase - PlayerRegistration shows "Jugador 1 de 4"
-    expect(screen.getByText(/Jugador 1 de/)).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText(/Jugador 1 de/)).toBeTruthy();
+    });
   });
 
   it('sets correct phase in store after new game', async () => {
@@ -74,9 +80,11 @@ describe('App', () => {
     const button = screen.getByText('Nueva partida');
     await fireEvent.click(button);
     
-    let state;
-    gameStore.subscribe(v => { state = v; })();
-    expect(state.currentRound.phase).toBe(PHASES.SETUP);
+    await waitFor(() => {
+      let state;
+      gameStore.subscribe(v => { state = v; })();
+      expect(state.currentRound.phase).toBe(PHASES.SETUP);
+    });
   });
 
   it('saves game to localStorage when not on welcome screen', async () => {
@@ -84,6 +92,8 @@ describe('App', () => {
     const button = screen.getByText('Nueva partida');
     await fireEvent.click(button);
     
-    expect(localStorageMock.setItem).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(localStorageMock.setItem).toHaveBeenCalled();
+    });
   });
 });
