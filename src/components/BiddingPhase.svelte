@@ -17,8 +17,18 @@
   $: totalBids = bids.reduce((sum, b) => sum + b.bid, 0);
   $: bidsValid = totalBids !== tricksInRound;
   
+  // Last player needs to re-bid when total is invalid
+  $: needsRebid = allBidsPlaced && !bidsValid;
+  $: rebidder = needsRebid ? players[players.length - 1] : null;
+  
   function placeBid(bid) {
     const newBids = [...bids, { playerId: currentBidder.id, bid }];
+    gameStore.setBids(newBids);
+  }
+  
+  function rebid(bid) {
+    // Remove last bid and replace with new one
+    const newBids = [...bids.slice(0, -1), { playerId: rebidder.id, bid }];
     gameStore.setBids(newBids);
   }
   
@@ -59,26 +69,44 @@
       </div>
     {/if}
     
+    {#if needsRebid}
+      <div class="w-full max-w-sm mx-auto text-center">
+        <div class="error-card mb-4">
+          <p class="text-rose font-bold">Total: {totalBids}</p>
+          <p class="text-gray-light text-sm mt-1">No puede ser {tricksInRound}</p>
+        </div>
+        <h3 class="text-gray-light text-sm mb-3">{rebidder.name}, elige otra apuesta</h3>
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <span class="avatar-large">{rebidder.avatar}</span>
+          <span class="text-xl font-bold text-bone">{rebidder.name}</span>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">
+          {#each Array(tricksInRound + 1) as _, i}
+            <button class="bid-btn" on:click={() => rebid(i)}>
+              {i}
+            </button>
+          {/each}
+        </div>
+      </div>
+    {/if}
+    
     <div class="card w-full max-w-sm mx-auto">
       <h3 class="text-gray-light text-sm mb-3">Apuestas</h3>
       <div class="flex flex-col gap-2">
-        {#each bids as bid}
+        {#each bids as bid, index}
           {@const player = players.find(p => p.id === bid.playerId)}
-          <div class="list-item">
+          <div class="list-item" class:highlight-row={needsRebid && index === bids.length - 1}>
             <span class="text-bone">{player.avatar} {player.name}</span>
             <span class="list-item-value">{bid.bid}</span>
           </div>
         {/each}
       </div>
       
-      {#if allBidsPlaced}
+      {#if allBidsPlaced && !needsRebid}
         <div class="flex justify-between items-center mt-3 pt-3 border-t border-border">
           <span class="text-gray-light">Total:</span>
-          <span class="font-bold" class:text-rose={!bidsValid} class:text-bone={bidsValid}>{totalBids}</span>
+          <span class="font-bold text-bone">{totalBids}</span>
         </div>
-        {#if !bidsValid}
-          <p class="error-text mt-2 text-center">No puede ser {tricksInRound}</p>
-        {/if}
       {/if}
     </div>
   </div>

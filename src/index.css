@@ -281,6 +281,19 @@
   text-align: center;
 }
 
+.list-item.highlight-row {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: #f43f5e;
+}
+
+.error-card {
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid #f43f5e;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+}
+
 /* Table Styles */
 .score-table {
   width: 100%;

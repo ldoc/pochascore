@@ -85,7 +85,7 @@ describe('BiddingPhase', () => {
     await clickBid(0);
     await clickBid(0);
     await clickBid(0);
-    await clickBid(1);
+    await clickBid(0);
     
     expect(screen.getByText('Total:')).toBeTruthy();
   });
