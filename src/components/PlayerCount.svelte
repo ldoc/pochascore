@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher, onMount, tick } from 'svelte';
   import { speak } from '../lib/voice';
   import { setupSwipe } from '../lib/swipe';
 
@@ -17,9 +17,10 @@
 
   $: items = Array.from({ length: maxPlayers - minPlayers + 1 }, (_, i) => i + minPlayers);
 
-  onMount(() => {
+  onMount(async () => {
     speak('Selecciona el número de jugadores');
     
+    await tick();
     scrollToValue(playerCount);
 
     const swipe = setupSwipe(
