@@ -132,7 +132,7 @@
         <PlayerRegistration totalPlayers={playerCount} on:registrationComplete={handleRegistrationComplete} />
         
       {:else if phase === PHASES.POSITIONING}
-        <TablePosition on:positioningComplete={handlePositioningComplete} />
+        <TablePosition on:complete={handlePositioningComplete} />
         
       {:else if phase === PHASES.ROUND_SETUP}
         <RoundSetup on:roundStarted={handleRoundStarted} />
