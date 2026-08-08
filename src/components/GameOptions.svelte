@@ -39,7 +39,7 @@
 
   onMount(() => {
     speak('Elige una opción');
-    const swipe = setupSwipe(screenEl, handleSwipeLeft, () => {});
+    const swipe = setupSwipe(screenEl, handleSwipeLeft, handleSwipeLeft);
     return () => swipe.destroy();
   });
 </script>

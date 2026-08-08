@@ -14,7 +14,7 @@
 
   onMount(() => {
     speak('Bienvenido a PochaScore');
-    const swipe = setupSwipe(screenEl, handleContinue, () => {});
+    const swipe = setupSwipe(screenEl, handleContinue, handleContinue);
     return () => swipe.destroy();
   });
 </script>

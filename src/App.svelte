@@ -41,7 +41,7 @@
   });
   
   $: phase = $gameStore.currentRound.phase;
-  $: if (phase !== PHASES.WELCOME) {
+  $: if (phase !== PHASES.WELCOME && $gameStore.players.length > 0) {
     saveGame($gameStore);
   }
   
@@ -57,7 +57,7 @@
   
   function handleNewGame() {
     gameStore.reset();
-    gameStore.setPhase(PHASES.SETUP);
+    gameStore.setPhase(PHASES.REGISTRATION);
     showToast('Nueva partida creada');
   }
   
@@ -71,13 +71,13 @@
   
   function handleSelectPlayerCount(event) {
     playerCount = event.detail.count;
-    gameStore.setPhase(PHASES.REGISTRATION);
+    gameStore.setPhase(PHASES.POSITIONING);
   }
   
   function handleRegistrationComplete(event) {
     const { players } = event.detail;
     players.forEach(player => gameStore.addPlayer(player));
-    gameStore.setPhase(PHASES.POSITIONING);
+    gameStore.setPhase(PHASES.ROUND_SETUP);
   }
   
   function handlePositioningComplete() {
@@ -133,9 +133,6 @@
     {:else if phase === PHASES.POSITIONING}
       <PlayerRegistration totalPlayers={playerCount} on:complete={handleRegistrationComplete} />
       
-    {:else if phase === PHASES.POSITIONING}
-      <TablePosition on:complete={handlePositioningComplete} />
-      
     {:else if phase === PHASES.ROUND_SETUP}
       <RoundSetup on:roundStarted={handleRoundStarted} />
       
@@ -147,9 +144,6 @@
       
     {:else if phase === PHASES.SCORING}
       <ResultsEntry on:complete={handleResultsComplete} />
-      
-    {:else if phase === PHASES.SCORING}
-      <ScoringPhaseNew on:nextRound={handleScoringNextRound} on:gameEnd={handleScoringGameEnd} />
       
     {:else if phase === PHASES.GAME_END}
       <FinalResults on:newGame={handleFinalNewGame} />
