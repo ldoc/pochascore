@@ -96,27 +96,30 @@ describe('PlayerRegistration', () => {
       await fireEvent.click(button);
     }
 
-    // After 3 registrations, currentPlayerIndex=3, totalPlayers=4, isLastPlayer=false
-    // Button still shows "Siguiente jugador"
+    // After 3 registrations, currentPlayerIndex=3, totalPlayers=4, isLastPlayer=true
     const input = screen.getByPlaceholderText('Nombre');
     await fireEvent.input(input, { target: { value: 'P4' } });
-    const button = screen.getByText('Siguiente jugador');
+    const button = screen.getByText('Comenzar partida');
     await fireEvent.click(button);
 
-    // After 4th click, currentPlayerIndex=4, totalPlayers=4, isLastPlayer=true
-    const nextButton = screen.getByText('Comenzar partida');
-    expect(nextButton).toBeTruthy();
+    expect(button).toBeTruthy();
   });
 
   it('registers all players after completing registration', async () => {
     render(PlayerRegistration);
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       const input = screen.getByPlaceholderText('Nombre');
       await fireEvent.input(input, { target: { value: `P${i + 1}` } });
       const button = screen.getByText('Siguiente jugador');
       await fireEvent.click(button);
     }
+
+    // Register last player
+    const input = screen.getByPlaceholderText('Nombre');
+    await fireEvent.input(input, { target: { value: 'P4' } });
+    const button = screen.getByText('Comenzar partida');
+    await fireEvent.click(button);
 
     const state = getStoreValue();
     expect(state.players).toHaveLength(4);

@@ -11,7 +11,7 @@
   let playerName = '';
   let selectedAvatar = AVATARS[0];
   let selectedColor = PLAYER_COLORS[0];
-  $: isLastPlayer = currentPlayerIndex >= totalPlayers;
+  $: isLastPlayer = currentPlayerIndex >= totalPlayers - 1;
   $: canProceed = playerName.length >= 2 && playerName.length <= 4;
   
   function handleRegister() {
