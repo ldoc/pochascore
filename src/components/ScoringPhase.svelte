@@ -50,109 +50,41 @@
   }
 </script>
 
-<div class="scoring">
-  <h2>Puntuación Ronda {round.number}</h2>
-  
-  <div class="scores-table">
-    <div class="table-header">
-      <span>Jugador</span>
-      <span>Apuesta</span>
-      <span>Bazas</span>
-      <span>Puntos</span>
-      <span>Total</span>
-    </div>
-    
-    {#each roundScores as score}
-      {@const player = players.find(p => p.id === score.playerId)}
-      <div class="table-row" class:positive={score.roundScore > 0} class:negative={score.roundScore < 0}>
-        <span class="player">{player.avatar} {player.name}</span>
-        <span>{score.bid}</span>
-        <span>{score.taken}</span>
-        <span class="round-score">{score.roundScore > 0 ? '+' : ''}{score.roundScore}</span>
-        <span class="total-score">{score.totalScore}</span>
-      </div>
-    {/each}
+<div class="panel">
+  <div class="panel-header">
+    <h2 class="text-lg font-bold text-bone text-center">Puntuación Ronda {round.number}</h2>
   </div>
   
-  <button class="primary" on:click={handleNextRound}>
-    {isLastRound ? 'Ver resultado final' : 'Siguiente ronda'}
-  </button>
+  <div class="panel-content flex flex-col gap-4 animate-fade-in">
+    <div class="card w-full max-w-md mx-auto overflow-hidden p-0">
+      <div class="score-table">
+        <div class="score-table-header flex">
+          <span class="flex-1">Jugador</span>
+          <span class="w-12">Apuesta</span>
+          <span class="w-12">Bazas</span>
+          <span class="w-14">Puntos</span>
+          <span class="w-12">Total</span>
+        </div>
+        
+        {#each roundScores as score}
+          {@const player = players.find(p => p.id === score.playerId)}
+          <div class="score-table-row flex">
+            <span class="flex-1 text-left text-bone">{player.avatar} {player.name}</span>
+            <span class="w-12 text-bone">{score.bid}</span>
+            <span class="w-12 text-bone">{score.taken}</span>
+            <span class="w-14 score-positive" class:score-negative={score.roundScore < 0}>
+              {score.roundScore > 0 ? '+' : ''}{score.roundScore}
+            </span>
+            <span class="w-12 font-bold text-bone">{score.totalScore}</span>
+          </div>
+        {/each}
+      </div>
+    </div>
+  </div>
+  
+  <div class="panel-footer">
+    <button class="btn-primary" on:click={handleNextRound}>
+      {isLastRound ? 'Ver resultado final' : 'Siguiente ronda'}
+    </button>
+  </div>
 </div>
-
-<style>
-  .scoring {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2rem;
-    gap: 2rem;
-  }
-  
-  h2 {
-    font-size: 1.5rem;
-  }
-  
-  .scores-table {
-    width: 100%;
-    max-width: 500px;
-    background: #16213e;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  
-  .table-header, .table-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-    padding: 0.75rem 1rem;
-    text-align: center;
-  }
-  
-  .table-header {
-    background: #0f3460;
-    font-weight: bold;
-    font-size: 0.85rem;
-    color: #a0a0a0;
-  }
-  
-  .table-row {
-    border-bottom: 1px solid #0f3460;
-  }
-  
-  .table-row:last-child {
-    border-bottom: none;
-  }
-  
-  .player {
-    text-align: left;
-  }
-  
-  .round-score {
-    font-weight: bold;
-  }
-  
-  .positive .round-score {
-    color: #4ECDC4;
-  }
-  
-  .negative .round-score {
-    color: #e94560;
-  }
-  
-  .total-score {
-    font-weight: bold;
-  }
-  
-  .primary {
-    width: 100%;
-    max-width: 300px;
-    padding: 1rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    background: #e94560;
-    color: white;
-    cursor: pointer;
-    margin-top: auto;
-  }
-</style>
