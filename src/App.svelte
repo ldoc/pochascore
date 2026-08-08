@@ -74,9 +74,7 @@
     gameStore.setPhase(PHASES.POSITIONING);
   }
   
-  function handleRegistrationComplete(event) {
-    const { players } = event.detail;
-    players.forEach(player => gameStore.addPlayer(player));
+  function handleRegistrationComplete() {
     gameStore.setPhase(PHASES.ROUND_SETUP);
   }
   
