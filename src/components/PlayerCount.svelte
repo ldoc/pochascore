@@ -13,7 +13,7 @@
 
   const minPlayers = 2;
   const maxPlayers = 10;
-  const itemHeight = 140;
+  const itemHeight = 56;
 
   $: items = Array.from({ length: maxPlayers - minPlayers + 1 }, (_, i) => i + minPlayers);
 
@@ -90,7 +90,7 @@
 
   function getItemStyle(index) {
     const value = items[index];
-    const containerHeight = scrollContainer?.clientHeight || 420;
+    const containerHeight = scrollContainer?.clientHeight || 200;
     const offset = (containerHeight - itemHeight) / 2;
     const itemTop = index * itemHeight;
     const scrollPos = scrollContainer?.scrollTop || 0;
@@ -100,17 +100,17 @@
     let fontSize, fontWeight, color, opacity;
 
     if (distance < itemHeight / 2) {
-      fontSize = '8rem';
+      fontSize = '3rem';
       fontWeight = 800;
       color = '#f0f0f0';
       opacity = 1;
     } else if (distance < itemHeight * 1.5) {
-      fontSize = '5rem';
+      fontSize = '1.8rem';
       fontWeight = 500;
       color = '#444';
       opacity = 0.7;
     } else {
-      fontSize = '5rem';
+      fontSize = '1.8rem';
       fontWeight = 500;
       color = '#444';
       opacity = 0.3;
@@ -165,8 +165,8 @@
   .scroll-wrapper {
     position: relative;
     width: 100%;
-    max-width: 200px;
-    height: clamp(300px, 50vh, 420px);
+    max-width: 160px;
+    height: clamp(180px, 30vh, 220px);
     overflow: hidden;
   }
 
@@ -186,7 +186,7 @@
   }
 
   .scroll-item {
-    height: 140px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -195,7 +195,7 @@
   }
 
   .spacer {
-    height: calc(50% - 70px);
+    height: calc(50% - 28px);
   }
 
   .highlight-zone {
@@ -209,10 +209,10 @@
   }
 
   .highlight-zone.top {
-    top: calc(50% - 70px);
+    top: calc(50% - 28px);
   }
 
   .highlight-zone.bottom {
-    bottom: calc(50% - 70px);
+    bottom: calc(50% - 28px);
   }
 </style>
