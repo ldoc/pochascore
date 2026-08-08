@@ -11,6 +11,8 @@
   let startY = 0;
   let scrollTop = 0;
 
+  let screenEl;
+
   const minPlayers = 2;
   const maxPlayers = 10;
   const itemHeight = 56;
@@ -24,7 +26,7 @@
     scrollToValue(playerCount);
 
     const swipe = setupSwipe(
-      scrollContainer,
+      screenEl,
       () => dispatch('select', { count: playerCount }),
       () => {}
     );
@@ -90,7 +92,7 @@
   }
 </script>
 
-<div class="screen">
+<div class="screen" bind:this={screenEl}>
   <h2 class="title">Nº de jugadores</h2>
 
   <div class="picker-wrapper">
