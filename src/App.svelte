@@ -80,6 +80,11 @@
     gameStore.setPhase(PHASES.ROUND_SETUP);
   }
   
+  function handleBackFromRegistration() {
+    gameStore.update(state => ({ ...state, players: [] }));
+    gameStore.setPhase(PHASES.REGISTRATION);
+  }
+  
   function handlePositioningComplete() {
     gameStore.setPhase(PHASES.ROUND_SETUP);
   }
@@ -131,7 +136,7 @@
       <PlayerCount on:select={handleSelectPlayerCount} />
       
     {:else if phase === PHASES.POSITIONING}
-      <PlayerRegistration totalPlayers={playerCount} on:complete={handleRegistrationComplete} />
+      <PlayerRegistration totalPlayers={playerCount} on:complete={handleRegistrationComplete} on:back={handleBackFromRegistration} />
       
     {:else if phase === PHASES.ROUND_SETUP}
       <RoundSetup on:roundStarted={handleRoundStarted} />

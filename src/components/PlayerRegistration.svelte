@@ -31,7 +31,7 @@
     const swipe = setupSwipe(
       screenEl,
       handleSwipeLeft,
-      () => {}
+      () => dispatch('back')
     );
 
     return () => swipe.destroy();
